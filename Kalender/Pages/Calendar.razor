@@ -1,0 +1,64 @@
+﻿@page "/calendar"
+@using Google.Apis.Calendar.v3
+@using Google.Apis.Calendar.v3.Data
+@using Google.Apis.Services
+
+@inherits ComponentBase
+
+<div>
+    <h3>Google Calendar Events</h3>
+    <ul>
+
+        @foreach (var date in Events)
+        {
+            int targetYear = 2023;
+            string startDate = date.Start.Date;
+            string endDate = date.End.Date;
+            DateTime startYear = DateTime.Parse(date.Start.Date);
+            DateTime endYear = DateTime.Parse(date.End.Date);
+
+            if (startYear.Year == targetYear || endYear.Year == targetYear)
+            {
+                <li>@date.Summary - @DateTimeParsing(startDate) - @DateTimeParsing(endDate)</li>
+            }
+
+        }
+
+    </ul>
+</div>
+
+@code {
+    const string ApiKey = "AIzaSyAfRLnIqo-P40tgSPqfGdzUwO1NQA-SAE4";
+    const string CalendarId = "da.danish#holiday@group.v.calendar.google.com";
+    List<Event> Events = new List<Event>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var service = new CalendarService(new BaseClientService.Initializer()
+                {
+                    ApiKey = ApiKey,
+                    ApplicationName = "Blazor Google Calendar Example"
+                });
+
+            var request = service.Events.List(CalendarId);
+            request.Fields = "items(summary,start,end)";
+            var response = await request.ExecuteAsync();
+            Events = response.Items.ToList();
+
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions or log errors here.
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    public string DateTimeParsing(string input)
+    {
+        var result = DateTime.Parse(input).ToString("dd-MM-yyyy");
+        return result;
+    }
+
+}

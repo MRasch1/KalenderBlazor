@@ -1,5 +1,4 @@
 using Kalender;
-using Kalender.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System.Net.Http;
@@ -9,9 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<ApiService>();
+
 
 
 var app = builder.Build();
