@@ -4,12 +4,13 @@
 @using Google.Apis.Services
 
 @inherits ComponentBase
+@inject IJSRuntime JsRuntime
 
 <div>
-    <h3>Weekly Calendar with Holidays</h3>
+    <h3>Calendar with Holidays</h3>
 
     <div>
-        <button @onclick="GoToPreviousWeek">Previous Week</button>
+        <button @onkeydown="HandleKeyPress_Left" @onclick="GoToPreviousWeek">Previous Week</button>
         <button @onclick="GoToNextWeek">Next Week</button>
     </div>
 
@@ -46,6 +47,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+
         try
         {
             var service = new CalendarService(new BaseClientService.Initializer()
@@ -58,59 +60,81 @@
             request.Fields = "items(summary,start,end)";
             var response = await request.ExecuteAsync();
             Holidays = response.Items.ToList();
+
+            
+            await JsRuntime.InvokeVoidAsync("customFunctions.addEventListener", (Func<KeyboardEventArgs, Task>)HandleKeyPress_Left);
         }
         catch (Exception ex)
         {
             // Handle exceptions or log errors here.
             Console.WriteLine(ex.Message);
         }
+
     }
 
     private bool IsHoliday(DateTime date)
-{
-    foreach (var holiday in Holidays)
     {
-        if (!string.IsNullOrWhiteSpace(holiday.Start?.Date))
+        foreach (var holiday in Holidays)
         {
-            if (DateTime.TryParse(holiday.Start.Date, out DateTime holidayDate))
+            if (!string.IsNullOrWhiteSpace(holiday.Start?.Date))
             {
-                if (date.Date == holidayDate.Date)
+                if (DateTime.TryParse(holiday.Start.Date, out DateTime holidayDate))
                 {
-                    return true;
+                    if (date.Date == holidayDate.Date)
+                    {
+                        return true;
+                    }
                 }
             }
         }
+        return false;
     }
-    return false;
-}
 
-private string GetHolidayName(DateTime date)
-{
-    foreach (var holiday in Holidays)
+    private string GetHolidayName(DateTime date)
     {
-        if (!string.IsNullOrWhiteSpace(holiday.Start?.Date))
+        foreach (var holiday in Holidays)
         {
-            if (DateTime.TryParse(holiday.Start.Date, out DateTime holidayDate))
+            if (!string.IsNullOrWhiteSpace(holiday.Start?.Date))
             {
-                if (date.Date == holidayDate.Date)
+                if (DateTime.TryParse(holiday.Start.Date, out DateTime holidayDate))
                 {
-                    return holiday.Summary ?? "";
+                    if (date.Date == holidayDate.Date)
+                    {
+                        return holiday.Summary ?? "";
+                    }
                 }
             }
         }
+        return "";
     }
-    return "";
-}
 
-private void GoToPreviousWeek()
+    private async Task GoToPreviousWeek()
     {
         DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(-14);
+        await Task.Delay(1000);
+        StateHasChanged();
     }
 
-    private void GoToNextWeek()
+    private async Task GoToNextWeek()
     {
         DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(14);
+        await Task.Delay(1000);
     }
 
 
-}
+    private async Task HandleKeyPress_Left(KeyboardEventArgs e)
+    {
+        if (e.Key == "ArrowLeft")
+        {
+            await GoToPreviousWeek();
+        }
+    }
+
+    // Remove the event listener when the component is disposed.
+    public async ValueTask DisposeAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("removeEventListener", "keydown", (Func<KeyboardEventArgs, Task>)HandleKeyPress_Left);
+    }
+
+
+    }
