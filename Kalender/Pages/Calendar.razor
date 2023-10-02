@@ -11,7 +11,7 @@
 
     <div>
         <button @onkeydown="HandleKeyPress_Left" @onclick="GoToPreviousWeek">Previous Week</button>
-        <button @onclick="GoToNextWeek">Next Week</button>
+        <button @onkeydown="HandleKeyPress_Right" @onclick=" GoToNextWeek">Next Week</button>
     </div>
 
     <table class="table">
