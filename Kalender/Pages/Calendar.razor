@@ -144,6 +144,7 @@
     public async ValueTask DisposeAsync()
     {
         await JsRuntime.InvokeVoidAsync("removeEventListener", "keydown", (Func<KeyboardEventArgs, Task>)HandleKeyPress_Left);
+        await JsRuntime.InvokeVoidAsync("removeEventListener", "keydown", (Func<KeyboardEventArgs, Task>)HandleKeyPress_Right);
     }
 
 
