@@ -63,6 +63,7 @@
 
 
             await JsRuntime.InvokeVoidAsync("customFunctions.addEventListener", (Func<KeyboardEventArgs, Task>)HandleKeyPress_Left);
+            await JsRuntime.InvokeVoidAsync("customFunctions.addEventListener", (Func<KeyboardEventArgs, Task>)HandleKeyPress_Right);
         }
         catch (Exception ex)
         {
