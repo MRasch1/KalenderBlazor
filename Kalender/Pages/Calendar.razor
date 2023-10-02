@@ -61,7 +61,7 @@
             var response = await request.ExecuteAsync();
             Holidays = response.Items.ToList();
 
-            
+
             await JsRuntime.InvokeVoidAsync("customFunctions.addEventListener", (Func<KeyboardEventArgs, Task>)HandleKeyPress_Left);
         }
         catch (Exception ex)
@@ -119,6 +119,7 @@
     {
         DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(14);
         await Task.Delay(1000);
+        StateHasChanged();
     }
 
 
@@ -127,6 +128,14 @@
         if (e.Key == "ArrowLeft")
         {
             await GoToPreviousWeek();
+        }
+    }
+
+    private async Task HandleKeyPress_Right(KeyboardEventArgs e)
+    {
+        if (e.Key == "ArrowRight")
+        {
+            await GoToNextWeek();
         }
     }
 
