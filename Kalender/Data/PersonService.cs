@@ -14,13 +14,13 @@ namespace Kalender.Data
         //Get all Persons List
         public async Task<List<Person>> GetAllPersons()
         {
-            return await _applicationDbContext.Persons.ToListAsync();
+            return await _applicationDbContext.Person.ToListAsync();
         }
 
         //Add New Person Record
         public async Task<bool> AddNewPerson(Person person)
         {
-            await _applicationDbContext.Persons.AddAsync(person);
+            await _applicationDbContext.Person.AddAsync(person);
             await _applicationDbContext.SaveChangesAsync();
             return true;
         }
@@ -28,14 +28,14 @@ namespace Kalender.Data
         //Get Person by Id
         public async Task<Person> GetPersonById(int id)
         {
-            Person person = await _applicationDbContext.Persons.FirstOrDefaultAsync(x => x.Id == id);
+            Person person = await _applicationDbContext.Person.FirstOrDefaultAsync(x => x.Id == id);
             return person;
         }
 
         //Update Person Data
         public async Task<bool> UpdatePersonDetails(Person person)
         {
-            _applicationDbContext.Persons.Update(person);
+            _applicationDbContext.Person.Update(person);
             await _applicationDbContext.SaveChangesAsync();
             return true;
         }
@@ -43,7 +43,7 @@ namespace Kalender.Data
         //Delete Person Data
         public async Task<bool> DeletePerson(Person person)
         {
-            _applicationDbContext.Persons.Remove(person);
+            _applicationDbContext.Person.Remove(person);
             await _applicationDbContext.SaveChangesAsync();
             return true;
         }

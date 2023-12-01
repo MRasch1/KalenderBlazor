@@ -3,15 +3,47 @@
 @inject PersonService personService
 @inject NavigationManager NavigationManager
 
-
+<form>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="for-group">
+                <label for="Fornavn" class="control-label">Fornavn</label>
+                <input form="Fornavn" class="form-control" @bind="@personObj.Fornavn" />
+            </div>
+            <div class="for-group">
+                <label for="Efternavn" class="control-label">Efternavn</label>
+                <input form="Efternavn" class="form-control" @bind="@personObj.Efternavn" />
+            </div>
+            <div class="for-group">
+                <label for="Fødselsdato" class="control-label">Fødselsdato</label>
+                <input form="Fødselsdato" class="form-control" @bind="@personObj.Fødselsdato" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@CreateNewPerson" value="Save Person" />
+                <input type="button" class="btn btn-danger" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
 
 
 
 @code {
-    
+    Person personObj = new Person();
 
-    
+    protected async void CreateNewPerson()
+    {
+        await personService.AddNewPerson(personObj);
+        NavigationManager.NavigateTo("calendar");
+    }
 
-    
+    protected async void Cancel()
+    {
+        NavigationManager.NavigateTo("calendar");
+    }
 
 }

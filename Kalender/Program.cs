@@ -1,7 +1,9 @@
 using Kalender;
+using Kalender.Context;
 using Kalender.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using System.Net.Http;
 
@@ -14,7 +16,7 @@ builder.Services.AddHttpClient();
 //builder.Services.AddScoped<IJSRuntime>(provider => provider.GetRequiredService<IJSRuntime>());
 builder.Services.AddScoped<PersonService>();
 
-
+builder.Services.AddDbContext<ApplicationDbContext>(item => item.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
