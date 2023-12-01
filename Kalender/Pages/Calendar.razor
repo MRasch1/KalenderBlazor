@@ -23,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var dayOfWeek in Enumerable.Range(0, 14))
+            @foreach (var dayOfWeek in Enumerable.Range(0, 7))
             {
                 var currentDate = DisplayedWeekStartDate.AddDays(dayOfWeek);
                 var isHoliday = IsHoliday(currentDate);
@@ -111,14 +111,14 @@
 
     private async Task GoToPreviousWeek()
     {
-        DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(-14);
+        DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(-7);
         await Task.Delay(1000);
         StateHasChanged();
     }
 
     private async Task GoToNextWeek()
     {
-        DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(14);
+        DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(7);
         await Task.Delay(1000);
         StateHasChanged();
     }
