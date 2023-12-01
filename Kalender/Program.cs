@@ -1,4 +1,5 @@
 using Kalender;
+using Kalender.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -11,6 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
 //builder.Services.AddScoped<IJSRuntime>(provider => provider.GetRequiredService<IJSRuntime>());
+builder.Services.AddScoped<PersonService>();
 
 
 

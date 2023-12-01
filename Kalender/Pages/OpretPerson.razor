@@ -1,11 +1,14 @@
 ﻿@page "/OpretPerson"
+@using Kalender.Data
+@inject PersonService personService
+@inject NavigationManager NavigationManager
 
-<input type="text" @bind="inputText" />
 
-<p>You entered: @inputText</p>
+
+
 
 @code {
-    private string inputText = "";
+    
 
     
 
