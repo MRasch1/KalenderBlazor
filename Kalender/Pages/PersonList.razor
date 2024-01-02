@@ -1,0 +1,68 @@
+﻿@page "/PersonList"
+@using Kalender.Data
+@inject PersonService personService
+
+
+@*<NavLink class="nav-link" href="AddNewUser">
+    <span class="oi oi-plus" aria-hidden="true"> Add New User</span>
+</NavLink>*@
+
+<h3>Person List</h3>
+
+@if (personObj is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Person Id
+                </th>
+                <th>
+                     Fornavn
+                </th>
+                <th>
+                    Efternavn
+                </th>
+                <th>
+                    Fødselsdato
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var person in personObj)
+            {
+                <tr>
+
+                    <td>
+                        @person.Id
+                    </td>
+                    <td>
+                        @person.Fornavn
+                    </td>
+                    <td>
+                        @person.Efternavn
+                    </td>
+                    <td>
+                        @person.Fødselsdato
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    List<Person> personObj;
+
+    protected override async Task OnInitializedAsync()
+    {
+        personObj = await Task.Run(() => personService.GetAllPersons());
+    }
+
+}
