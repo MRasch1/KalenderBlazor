@@ -17,6 +17,18 @@ namespace Kalender.Data
             return await _applicationDbContext.Person.ToListAsync();
         }
 
+        // Get People with Upcoming Birthdays
+        public async Task<List<Person>> GetPeopleWithUpcomingBirthdays(int daysAhead = 7)
+        {
+            DateTime today = DateTime.Today;
+            DateTime futureDate = today.AddDays(daysAhead);
+
+            return await _applicationDbContext.Person
+                .Where(person => person.Fødselsdato.Month == today.Month && person.Fødselsdato.Day >= today.Day ||
+                                 person.Fødselsdato.Month == futureDate.Month && person.Fødselsdato.Day <= futureDate.Day)
+                .ToListAsync();
+        }
+
         //Add New Person Record
         public async Task<bool> AddNewPerson(Person person)
         {

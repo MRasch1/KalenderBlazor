@@ -29,18 +29,11 @@
             {
                 var currentDate = DisplayedWeekStartDate.AddDays(dayOfWeek);
                 var isHoliday = IsHoliday(currentDate);
-                @*var persons = GetPersonByWeek(currentDate, currentDate);*@
 
                 <tr>
                     <td>@currentDate.ToString("dd-MM-yyyy")</td>
                     <td>@currentDate.DayOfWeek</td>
-                    <td>@(isHoliday ? GetHolidayName(currentDate) : "")</td>
-                    @*<td>
-                        @foreach (var person in persons)
-                        {
-                            <p>@person.Fornavn @person.Efternavn - Birthday</p>
-                        }
-                    </td>*@
+                    <td>@(isHoliday ? GetHolidayName(currentDate) : "")</td>                    
                 </tr>
             }
         </tbody>
@@ -51,9 +44,8 @@
 @code {
     const string ApiKey = "AIzaSyAfRLnIqo-P40tgSPqfGdzUwO1NQA-SAE4";
     const string CalendarId = "da.danish#holiday@group.v.calendar.google.com";
-    List<Event> Holidays = new List<Event>();
+    List<Event> Holidays = new List<Event>();    
     DateTime DisplayedWeekStartDate = DateTime.Now; // Initially, display the current week.
-    List<Person> personObj;
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,8 +56,6 @@
     {
         try
         {
-            
-            personObj = await personService.GetAllPersons();
 
             var service = new CalendarService(new BaseClientService.Initializer()
                 {
@@ -89,21 +79,6 @@
             Console.WriteLine(ex.Message);
         }
     }
-
-    //private List<Person> GetPersonByWeek(DateTime startDate, DateTime endDate)
-    //{
-        
-    //    if (personObj == null)
-    //    {
-    //        // Wait for personObj to be loaded
-    //        Task.Run(async () => { while (personObj == null) await Task.Delay(100); })
-    //            .Wait();
-    //    }
-
-    //    return personObj
-    //        .Where(p => p.Fødselsdato.Date >= startDate.Date && p.Fødselsdato.Date <= endDate.Date)
-    //        .ToList();
-    //}
 
     private bool IsHoliday(DateTime date)
     {
