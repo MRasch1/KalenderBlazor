@@ -9,42 +9,62 @@
 @inject PersonService personService
 
 <div>
-    <h3>Calendar with Holidays and Birthdays</h3>
 
-    <div>
-        <button @onkeydown="HandleKeyPress_Left" @onclick="GoToPreviousWeek">Previous Week</button>
-        <button @onkeydown="HandleKeyPress_Right" @onclick=" GoToNextWeek">Next Week</button>
-    </div>
+    @if (personObj is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <h3>Calendar with Holidays and Birthdays</h3>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Day of the Week</th>
-                <th>Holiday</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var dayOfWeek in Enumerable.Range(0, 7))
-            {
-                var currentDate = DisplayedWeekStartDate.AddDays(dayOfWeek);
-                var isHoliday = IsHoliday(currentDate);
+        <div>
+            <button @onkeydown="HandleKeyPress_Left" @onclick="GoToPreviousWeek">Previous Week</button>
+            <button @onkeydown="HandleKeyPress_Right" @onclick=" GoToNextWeek">Next Week</button>
+        </div>
 
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@currentDate.ToString("dd-MM-yyyy")</td>
-                    <td>@currentDate.DayOfWeek</td>
-                    <td>@(isHoliday ? GetHolidayName(currentDate) : "")</td>                    
+                    <th>Date</th>
+                    <th>Day of the Week</th>
+                    <th>Holiday</th>
+                    <th>Persons</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var dayOfWeek in Enumerable.Range(0, 7))
+                {
+                    var currentDate = DisplayedWeekStartDate.AddDays(dayOfWeek);
+                    var isHoliday = IsHoliday(currentDate);
+
+                    <tr>
+                        <td>@currentDate.ToString("dd-MM-yyyy")</td>
+                        <td>@currentDate.DayOfWeek</td>
+                        <td>@(isHoliday ? GetHolidayName(currentDate) : "")</td>
+                        <td>
+                            @foreach (var person in personObj)
+                            {
+                                @if (currentDate.DayOfYear == person.Fødselsdato.DayOfYear)
+                                {
+                                    <div>@person.Fornavn @person.Efternavn (Birthday: @person.Fødselsdato.Date.ToShortDateString())</div>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
 </div>
 
 
 @code {
     const string ApiKey = "AIzaSyAfRLnIqo-P40tgSPqfGdzUwO1NQA-SAE4";
     const string CalendarId = "da.danish#holiday@group.v.calendar.google.com";
-    List<Event> Holidays = new List<Event>();    
+    List<Event> Holidays = new List<Event>();
+    List<Person> personObj;
     DateTime DisplayedWeekStartDate = DateTime.Now; // Initially, display the current week.
 
     protected override async Task OnInitializedAsync()
@@ -54,6 +74,8 @@
 
     private async Task LoadData()
     {
+        personObj = await Task.Run(() => personService.GetAllPersons());
+
         try
         {
 
@@ -130,7 +152,6 @@
         StateHasChanged();
     }
 
-
     private async Task HandleKeyPress_Left(KeyboardEventArgs e)
     {
         if (e.Key == "ArrowLeft")
@@ -153,6 +174,4 @@
         await JsRuntime.InvokeVoidAsync("removeEventListener", "keydown", (Func<KeyboardEventArgs, Task>)HandleKeyPress_Left);
         await JsRuntime.InvokeVoidAsync("removeEventListener", "keydown", (Func<KeyboardEventArgs, Task>)HandleKeyPress_Right);
     }
-
-
-    }
+}

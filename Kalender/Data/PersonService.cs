@@ -11,22 +11,21 @@ namespace Kalender.Data
             _applicationDbContext = applicationDbContext;
         }
 
+        // Get Persons by Birthdate
+        public async Task<List<Person>> GetPersonsByBirthdateAsync(DateTime birthdate)
+        {
+            // Fetch persons from the database whose birthdate matches the specified date
+            var persons = await _applicationDbContext.Person
+                .Where(p => p.Fødselsdato.Month == birthdate.Month && p.Fødselsdato.Day == birthdate.Day)
+                .ToListAsync();
+
+            return persons;
+        }
+
         //Get all Persons List
         public async Task<List<Person>> GetAllPersons()
         {
             return await _applicationDbContext.Person.ToListAsync();
-        }
-
-        // Get People with Upcoming Birthdays
-        public async Task<List<Person>> GetPeopleWithUpcomingBirthdays(int daysAhead = 7)
-        {
-            DateTime today = DateTime.Today;
-            DateTime futureDate = today.AddDays(daysAhead);
-
-            return await _applicationDbContext.Person
-                .Where(person => person.Fødselsdato.Month == today.Month && person.Fødselsdato.Day >= today.Day ||
-                                 person.Fødselsdato.Month == futureDate.Month && person.Fødselsdato.Day <= futureDate.Day)
-                .ToListAsync();
         }
 
         //Add New Person Record
