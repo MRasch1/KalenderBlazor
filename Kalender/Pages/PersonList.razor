@@ -47,7 +47,7 @@ else
                         @person.Efternavn
                     </td>
                     <td>
-                        @person.Fødselsdato
+                        @person.Fødselsdato.Date.ToShortDateString()
                     </td>
 
                 </tr>
@@ -58,11 +58,12 @@ else
 
 
 @code {
-    List<Person> personObj;
+    List<Person> ?personObj;
 
     protected override async Task OnInitializedAsync()
     {
         personObj = await Task.Run(() => personService.GetAllPersons());
+        personObj = personObj.OrderBy(p => p.Id).ToList();
     }
 
 }

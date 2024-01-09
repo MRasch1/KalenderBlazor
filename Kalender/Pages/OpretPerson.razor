@@ -16,7 +16,7 @@
             </div>
             <div class="for-group">
                 <label for="Fødselsdato" class="control-label">Fødselsdato</label>
-                <input form="Fødselsdato" class="form-control" @bind="@personObj.Fødselsdato" />
+                <input type="date" id="Fødselsdato" name="trip-start" form="Fødselsdato" class="form-control" @bind="@personObj.Fødselsdato" />
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
 
 
 @code {
-    Person personObj = new Person();
+    Person personObj = new Person { Fødselsdato = DateTime.Now };
 
     protected async void CreateNewPerson()
     {
@@ -41,7 +41,7 @@
         NavigationManager.NavigateTo("calendar");
     }
 
-    protected async void Cancel()
+    protected void Cancel()
     {
         NavigationManager.NavigateTo("calendar");
     }

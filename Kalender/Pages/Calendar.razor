@@ -65,11 +65,22 @@
     const string CalendarId = "da.danish#holiday@group.v.calendar.google.com";
     List<Event> Holidays = new List<Event>();
     List<Person> personObj;
-    DateTime DisplayedWeekStartDate = DateTime.Now; // Initially, display the current week.
+    DateTime DisplayedWeekStartDate = DateTime.Now.Date;
+
 
     protected override async Task OnInitializedAsync()
     {
+        DisplayedWeekStartDate = StartFromMonday();
         await LoadData();
+    }
+
+    private DateTime StartFromMonday()
+    {
+        DateTime DisplayedWeekStartDate = DateTime.Now.Date;
+        int daysUntilMonday = (7 + (int)DisplayedWeekStartDate.DayOfWeek - (int)DayOfWeek.Monday) % 7;
+        DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(-daysUntilMonday);
+
+        return DisplayedWeekStartDate;
     }
 
     private async Task LoadData()
