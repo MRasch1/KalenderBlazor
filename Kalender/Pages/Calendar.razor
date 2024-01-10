@@ -39,7 +39,7 @@
                     var isHoliday = IsHoliday(currentDate);
 
                     <tr>
-                        <td>@currentDate.ToString("dd-MM-yyyy")</td>
+                        <td class="@((currentDate == DateTime.Now.Date) ? "current-day" : "")">@currentDate.ToString("dd-MM-yyyy")</td>
                         <td>@currentDate.DayOfWeek</td>
                         <td>@(isHoliday ? GetHolidayName(currentDate) : "")</td>
                         <td>
@@ -47,13 +47,23 @@
                             {
                                 @if (currentDate.DayOfYear == person.Fødselsdato.DayOfYear)
                                 {
-                                    <div>@person.Fornavn @person.Efternavn (Birthday: @person.Fødselsdato.Date.ToShortDateString())</div>
+                                    <div>@person.Fornavn @person.Efternavn (Birthday: @person.Fødselsdato.Date.ToShortDateString()) Alder blevet: @(currentDate.Year - person.Fødselsdato.Year)</div>
                                 }
                             }
                         </td>
                     </tr>
                 }
             </tbody>
+
+            <style>
+                .current-day {
+                    border-style: ridge;
+                    font-weight: bold;
+                    border-width: 3px;
+                    border-top-width: 3px;
+                    border-color: lightsteelblue;
+                }
+            </style>
         </table>
     }
 
