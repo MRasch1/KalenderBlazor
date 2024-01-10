@@ -29,7 +29,10 @@
                     <th>Date</th>
                     <th>Day of the Week</th>
                     <th>Holiday</th>
-                    <th>Persons</th>
+                    @if (ShouldShowPersonsHeader())
+                    {
+                        <th>Persons</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -54,8 +57,6 @@
                     </tr>
                 }
             </tbody>
-
-            
         </table>
 
         <style>
@@ -86,7 +87,7 @@
     const string ApiKey = "AIzaSyAfRLnIqo-P40tgSPqfGdzUwO1NQA-SAE4";
     const string CalendarId = "da.danish#holiday@group.v.calendar.google.com";
     List<Event> Holidays = new List<Event>();
-    List<Person> ?personObj;
+    List<Person>? personObj;
     DateTime DisplayedWeekStartDate = DateTime.Now.Date;
 
 
@@ -96,8 +97,34 @@
         await LoadData();
     }
 
+    bool ShouldShowPersonsHeader()
+    {
+        bool hasPersonsContent = false;
+
+        foreach (var dayOfWeek in Enumerable.Range(0, 7))
+        {
+            var currentDate = DisplayedWeekStartDate.AddDays(dayOfWeek);
+
+            foreach (var person in personObj)
+            {
+                if (currentDate.DayOfYear == person.Fødselsdato.DayOfYear)
+                {
+                    hasPersonsContent = true;
+                    break; // No need to continue checking, we found content
+                }
+            }
+
+            if (hasPersonsContent)
+            {
+                break; // No need to check more rows if content is found
+            }
+        }
+
+        return hasPersonsContent;
+    }
+
     private DateTime StartFromMonday()
-    {        
+    {
         DateTime DisplayedWeekStartDate = DateTime.Now.Date;
         int daysUntilMonday = (7 + (int)DisplayedWeekStartDate.DayOfWeek - (int)DayOfWeek.Monday) % 7;
         DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(-daysUntilMonday);
