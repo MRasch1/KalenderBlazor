@@ -41,7 +41,7 @@
                     <tr>
                         <td class="@((currentDate == DateTime.Now.Date) ? "current-day" : "")">@currentDate.ToString("dd-MM-yyyy")</td>
                         <td>@currentDate.DayOfWeek</td>
-                        <td>@(isHoliday ? GetHolidayName(currentDate) : "")</td>
+                        <td class="@((isHoliday == true) ? "its-holiday" : "")">@(isHoliday ? GetHolidayName(currentDate) : "")</td>
                         <td>
                             @foreach (var person in personObj)
                             {
@@ -55,16 +55,28 @@
                 }
             </tbody>
 
-            <style>
-                .current-day {
-                    border-style: ridge;
-                    font-weight: bold;
-                    border-width: 3px;
-                    border-top-width: 3px;
-                    border-color: lightsteelblue;
-                }
-            </style>
+            
         </table>
+
+        <style>
+
+            .current-day {
+                border-style: ridge;
+                font-weight: bold;
+                border-width: 3px;
+                border-top-width: 3px;
+                border-color: lightsteelblue;
+            }
+
+            .its-holiday {
+                border-style: ridge;
+                font-weight: bold;
+                border-width: 3px;
+                border-top-width: 3px;
+                border-color: forestgreen;
+            }
+
+        </style>
     }
 
 </div>
@@ -74,7 +86,7 @@
     const string ApiKey = "AIzaSyAfRLnIqo-P40tgSPqfGdzUwO1NQA-SAE4";
     const string CalendarId = "da.danish#holiday@group.v.calendar.google.com";
     List<Event> Holidays = new List<Event>();
-    List<Person> personObj;
+    List<Person> ?personObj;
     DateTime DisplayedWeekStartDate = DateTime.Now.Date;
 
 
@@ -85,7 +97,7 @@
     }
 
     private DateTime StartFromMonday()
-    {
+    {        
         DateTime DisplayedWeekStartDate = DateTime.Now.Date;
         int daysUntilMonday = (7 + (int)DisplayedWeekStartDate.DayOfWeek - (int)DayOfWeek.Monday) % 7;
         DisplayedWeekStartDate = DisplayedWeekStartDate.AddDays(-daysUntilMonday);
