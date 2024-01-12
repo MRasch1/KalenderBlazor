@@ -42,7 +42,7 @@
                     var isHoliday = IsHoliday(currentDate);
 
                     <tr>
-                        <td class="@((currentDate == DateTime.Now.Date) ? "current-day" : "")">@currentDate.ToString("dd-MM-yyyy")</td>
+                        <td class="@((currentDate == DateTime.Now.Date) ? $"{currentDay}" : "")">@currentDate.ToString("dd-MM-yyyy")</td>
                         <td>@currentDate.DayOfWeek</td>
                         <td class="@((isHoliday == true) ? "its-holiday" : "")">@(isHoliday ? GetHolidayName(currentDate) : "")</td>
                         <td>
@@ -59,9 +59,11 @@
             </tbody>
         </table>
 
+        
+
         <style>
 
-            .current-day {
+            .@(currentDay) {
                 border-style: ridge;
                 font-weight: bold;
                 border-width: 3px;
@@ -89,6 +91,7 @@
     List<Event> Holidays = new List<Event>();
     List<Person> personObj = new List<Person>();
     DateTime DisplayedWeekStartDate = DateTime.Now.Date;
+    string currentDay = "current-day";
 
 
     protected override async Task OnInitializedAsync()

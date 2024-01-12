@@ -16,7 +16,7 @@
             </div>
             <div class="for-group">
                 <label for="Fødselsdato" class="control-label">Fødselsdato</label>
-                <input type="date" id="Fødselsdato" name="trip-start"  form="Fødselsdato" class="form-control" @bind="@personObj.Fødselsdato" />
+                <input type="date" id="Fødselsdato" name="trip-start" form="Fødselsdato" class="form-control" @bind="@personObj.Fødselsdato" />
             </div>
         </div>
     </div>
@@ -30,7 +30,7 @@
     </div>
 </form>
 
-@if (personObj.Fødselsdato != minimumAge)
+@if (personObj.Fødselsdato > minimumAge || string.IsNullOrEmpty(personObj.Fornavn) || personObj.Fornavn.Length < 3)
 {
     <p class="text-danger">@errorMessage</p>
 }
@@ -42,16 +42,36 @@
     DateTime minimumAge = DateTime.Now.AddYears(-18);
     private string errorMessage;
 
+
     protected async void CreateNewPerson()
     {
-        if (personObj.Fødselsdato < minimumAge)
+        errorMessage = "Error:";
+        bool errorFound = false;
+
+        if (personObj.Fødselsdato > minimumAge)
         {
-            await personService.AddNewPerson(personObj);
-            NavigationManager.NavigateTo("calendar");
+            errorMessage += " the person needs to be 18 or older to register,";
+            errorFound = true;
+        }
+        else if (string.IsNullOrEmpty(personObj.Fornavn))
+        {
+            errorMessage += " the Fornavn field needs a name,";
+            errorFound = true;
+        }
+        else if (personObj.Fornavn.Length < 3)
+        {
+            errorMessage += " the Fornavn field needs be longer than 3 letters,";
+            errorFound = true;
+        }
+        if (errorFound)
+        {
+            errorMessage = errorMessage.TrimEnd(',');
+            errorMessage += ".";
         }
         else
         {
-            errorMessage = "The person has to be 18 and above!";
+            await personService.AddNewPerson(personObj);
+            NavigationManager.NavigateTo("calendar");
         }
     }
 
