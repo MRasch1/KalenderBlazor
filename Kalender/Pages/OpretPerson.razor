@@ -16,7 +16,7 @@
             </div>
             <div class="for-group">
                 <label for="Fødselsdato" class="control-label">Fødselsdato</label>
-                <input type="date" id="Fødselsdato" name="trip-start" form="Fødselsdato" class="form-control" @bind="@personObj.Fødselsdato" />
+                <input type="date" id="Fødselsdato" name="trip-start"  form="Fødselsdato" class="form-control" @bind="@personObj.Fødselsdato" />
             </div>
         </div>
     </div>
@@ -30,15 +30,29 @@
     </div>
 </form>
 
+@if (personObj.Fødselsdato != minimumAge)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+
 
 
 @code {
     Person personObj = new Person { Fødselsdato = DateTime.Now };
+    DateTime minimumAge = DateTime.Now.AddYears(-18);
+    private string errorMessage;
 
     protected async void CreateNewPerson()
     {
-        await personService.AddNewPerson(personObj);
-        NavigationManager.NavigateTo("calendar");
+        if (personObj.Fødselsdato < minimumAge)
+        {
+            await personService.AddNewPerson(personObj);
+            NavigationManager.NavigateTo("calendar");
+        }
+        else
+        {
+            errorMessage = "The person has to be 18 and above!";
+        }
     }
 
     protected void Cancel()
